@@ -5,15 +5,15 @@ const sequelize = new Sequelize({
   storage: './database.sqlite3'
 });
 
-class Account extends Sequelize.Model {}
+class Account extends Sequelize.Model { }
 Account.init(
   {
     name: {
       type: Sequelize.STRING,
       allowNull: true
     },
-    balance:{
-      type:Sequelize.BIGINT
+    balance: {
+      type: Sequelize.BIGINT
     },
     direction: {
       type: Sequelize.ENUM('debit', 'credit')
@@ -25,7 +25,7 @@ Account.init(
   }
 );
 
-class Entry extends Sequelize.Model {}
+class Entry extends Sequelize.Model { }
 Entry.init(
   {
     amount: {
@@ -33,7 +33,7 @@ Entry.init(
       allowNull: false
     },
     direction: {
-      type: Sequelize.ENUM('debit','credit')
+      type: Sequelize.ENUM('debit', 'credit')
     }
   },
   {
@@ -42,7 +42,7 @@ Entry.init(
   }
 );
 
-class Transaction extends Sequelize.Model {}
+class Transaction extends Sequelize.Model { }
 Transaction.init(
   {
     name: {
@@ -56,10 +56,10 @@ Transaction.init(
   }
 );
 
-Account.hasMany(Entry, {as :'entries',foreignKey:'entry_id'})
-Entry.belongsTo(Account, {as: 'account'})
-Transaction.hasMany(Entry, {as : 'entries', foreignKey:'entry_id'})
-Entry.belongsTo(Transaction, {as: 'transaction'})
+Account.hasMany(Entry, { foreignKey: 'accountId' });
+Entry.belongsTo(Account);
+Transaction.hasMany(Entry, { foreignKey: 'transactionId' });
+Entry.belongsTo(Transaction);
 
 module.exports = {
   Sequelize,

@@ -2,13 +2,15 @@ const CreateTransactionUsecase = require('../../domain/usecases/create-transacti
 const makeAccountRepository = require('../repositories/account-repository.factory');
 const makeTransactionRepository = require('../repositories/transaction-repository.factory');
 const makeEntryRepository = require('../repositories/entry-repository.factory');
-const makeTransactionEntity = require('../entities/transaction-entity.factory');
+const makeEntryEntity = require('../entities/transaction-entity.factory');
+const makeTransactionEntity = require('../entities/entry-entity.factory');
 
 module.exports = () => {
   const accountRepository = makeAccountRepository();
   const transactionRepository = makeTransactionRepository();
   const entryRepository = makeEntryRepository();
   const transactionEntity = makeTransactionEntity();
+  const entryEntity = makeEntryEntity();
 
-  return new CreateTransactionUsecase({ transactionEntity, accountRepository, transactionRepository, entryRepository });
+  return new CreateTransactionUsecase({ transactionEntity, entryEntity, accountRepository, transactionRepository, entryRepository });
 }
