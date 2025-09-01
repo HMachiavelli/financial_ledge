@@ -1,8 +1,9 @@
 const InvalidParameterError = require("../errors/invalid-parameter");
 
 module.exports = class CreateAccountUsecase {
-  constructor({ transactionEntity, accountRepository, transactionRepository, entryRepository }) {
+  constructor({ transactionEntity, entryEntity, accountRepository, transactionRepository, entryRepository }) {
     this.transactionEntity = transactionEntity;
+    this.entryEntity = entryEntity;
     this.accountRepository = accountRepository;
     this.transactionRepository = transactionRepository;
     this.entryRepository = entryRepository;
@@ -22,7 +23,7 @@ module.exports = class CreateAccountUsecase {
       });
 
       let transaction = await this.transactionRepository.create(this.transactionEntity);
-      transaction.entries = this.handleEntries(input.entries, transaction.id);
+      transaction.entries = await this.handleEntries(input.entries, transaction.id);
 
       this.transactionRepository.finishTransaction();
 
@@ -37,27 +38,35 @@ module.exports = class CreateAccountUsecase {
   handleEntries = async (entries, transactionId) => {
     let response = [];
     for (let entry of entries) {
-      const account = await this.accountRepository.findById(entry.accountId);
+      const account = await this.accountRepository.findById(entry.account_id);
       if (!account) {
         throw new InvalidParameterError(`Account ID ${entry.accountId} not found`);
       }
 
-      entry.transactionId = transactionId;
-
-      this.entryEntity.build(entry);
+      this.entryEntity.build({
+        accountId: entry.account_id,
+        transactionId,
+        direction: entry.direction,
+        amount: entry.amount
+      });
       response.push(await this.entryRepository.create(this.entryEntity));
 
-      await this.handleAccountBalance(account, entry);
+      await this.handleAccountBalance(account);
     }
 
     return response;
   }
 
-  handleAccountBalance = async (account, entry) => {
-    if(account.direction !== entry.direction) {
-      entry.amount = entry.amount * -1;
+  handleAccountBalance = async (account) => {
+    let amount = this.entryEntity.amount;
+    if(account.direction !== this.entryEntity.direction) {
+      amount = this.entryEntity.amount * -1;
     }
 
-    await this.accountRepository.updateBalance(entry.accountId, entry.amount);
+    const updatedBalance = account.balance + amount;
+
+    console.log(this.entryEntity.accountId, updatedBalance);
+
+    await this.accountRepository.updateBalance(this.entryEntity.accountId, updatedBalance);
   }
 }

@@ -65,11 +65,12 @@ describe('Test create account usecase', () => {
     }
   });
   
-  it('should throw error if entity throws error', async () => {
+  it('should throw error and rollback if entity throws error', async () => {
     try {
       params.accountEntity.build.mock.mockImplementationOnce(() => { throw new Error('any error') });
       await sut.execute(input);
     } catch (err) {
+      assert.equal(params.accountRepository.undoTransaction.mock.callCount(), 1);
       assert.equal(err instanceof Error, true);
       assert.equal(err.message, 'any error');
     }

@@ -14,4 +14,16 @@ module.exports = class Transaction {
     this.name = name;
     this.entries = entries;
   }
+
+  toJSON() {
+    let json = {
+      name: this.name
+    };
+
+    if(this.entries.length) {
+      json.entries = this.entries;
+    }
+
+    return json;
+  }
 }

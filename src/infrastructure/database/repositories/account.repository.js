@@ -13,6 +13,24 @@ class AccountRepository extends Repository {
     return this.toEntity(account);
   }
 
+  updateBalance = async (accountId, balance) => {
+    let options = {
+      where: { id: accountId }
+    };
+
+    if(this.transaction) {
+      options.transaction = this.transaction;
+    }
+
+    const data = {
+      balance
+    };
+
+    const updated = await this.model.update(data, options);
+
+    return this.toEntity(updated);
+  }
+
   toEntity = (model) => {
     return {
       id: model.id,

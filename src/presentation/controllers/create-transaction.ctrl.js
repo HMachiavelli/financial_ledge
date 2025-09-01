@@ -8,7 +8,7 @@ module.exports = class CreateTransactionController extends Controller {
 
   execute = async (req, res) => {
     try {
-      const response = await this.createTransactionUsecase.execute({ amount: +req.body.amount, user: req.profile });
+      const response = await this.createTransactionUsecase.execute({ name: req.body?.name, entries: req.body.entries });
 
       return res.json(response);
     } catch (e) {
