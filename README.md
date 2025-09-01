@@ -12,8 +12,8 @@ To start the nodemon server, run:
 To execute unit tests, run:
 `npm run test`
 
-# Candidate notes
+# Notes
 
-- I haven't done some things to save time and complexity, like using TS or API authentication;
-- I chose to use integers instead of UUIDs for primary key IDs, thinking about scalability, integers work better with larger tables and indexes;
-- All IDs are auto-generated.
+- Using TS or API authentication were not done to save time and coplexity;
+- Using integers instead of UUIDs for primary key IDs, thinking about scalability, integers work better with larger tables and indexes;
+- All IDs are auto-generated;
