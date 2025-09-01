@@ -1,9 +1,12 @@
 # Financial Ledge
 API for a simple financial ledge.
 
-# Running
+# Running instructions
 
-To run the project it's required to setup de SQLite database first. Do so by running:
+Install npm packages with:
+`npm install`
+
+Then, to run the project, it is required to setup the SQLite database first. Do so by running:
 `npm run migrate`
 
 To start the nodemon server, run:
